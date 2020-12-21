@@ -1,0 +1,5 @@
+name: color-switch-ai-env
+dependencies:
+- python=3
+- numpy
+- tensorflow
