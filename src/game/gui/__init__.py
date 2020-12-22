@@ -10,6 +10,7 @@ class ColorSwitchGui():
         self.root = tk.Tk()
         self.root.title('Color Switch')
         self.root.bind('<space>', lambda e: env.on_user_input())
+        self.root.bind('<p>', lambda e: env.toggle_pause())
         self.frame = Frame(self.root, env)
 
     def is_open(self):

@@ -3,7 +3,7 @@ from .items import *
 from .utils import *
 
 class ColorSwitchEnvironment():
-    def __init__(self, width=300, height=500, scroll_speed=-1.5, palette=Palette(), ball=Ball()):
+    def __init__(self, width=300, height=500, scroll_speed=-0.75, palette=Palette(), ball=Ball()):
         # Sizing
         self.width = width
         self.height = height
@@ -34,6 +34,15 @@ class ColorSwitchEnvironment():
 
     def restart(self):
         self.start()
+
+    def pause(self):
+        self.paused = True
+
+    def resume(self):
+        self.paused = False
+
+    def toggle_pause(self):
+        self.paused = not self.paused
 
     def tick(self):
         if not self.paused:
@@ -67,7 +76,7 @@ class ColorSwitchEnvironment():
 
     def add_obstacle(self):
         self.obstacles.append(Obstacle(self.palette, y=MotionDimension(pos=self.top_edge, vel=self.scroll_speed),
-            deg=MotionDimension(vel=-1)))
+            deg=MotionDimension(vel=-1.5)))
 
     def add_switch(self):
         self.switches.append(Switch(self.palette, y=MotionDimension(pos=self.top_edge, vel=self.scroll_speed)))
