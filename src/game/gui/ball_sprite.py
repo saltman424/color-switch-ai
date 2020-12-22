@@ -1,12 +1,11 @@
 import tkinter as tk
-import random as rand
 from .sprite import Sprite
 
-class Ball(Sprite):
+class BallSprite(Sprite):
     def __init__(self, canvas, env, ball):
         super().__init__(canvas, env)
         self.ball = ball
-        self.tag = 'ball'
+        self.tag = 'ball' + str(ball.id)
         self.draw()
 
     def calculate_coords(self):

@@ -17,10 +17,7 @@ class ColorSwitchEnvironment():
         # Items
         self.palette = palette
         self.ball = ball
-        if self.ball.color is None:
-            self.ball.color = self.palette.get_random_color()
-        self.ticks_til_next_switch = self.get_random_number_of_ticks()
-        self.switches = []
+        self.start()
 
     def start(self):
         self.paused = True
@@ -30,7 +27,10 @@ class ColorSwitchEnvironment():
         self.ball.y.pos = 0
         self.ball.y.vel = 0
         self.switches = []
-        self.ticks_til_next_switch = self.get_random_number_of_ticks()
+        self.ticks_til_next_obstacle = self.get_random_number_of_ticks()
+        self.obstacles = []
+        self.ticks_til_next_switch = self.ticks_til_next_obstacle + self.get_random_number_of_ticks()
+        self.switches = []
 
     def restart(self):
         self.start()
@@ -40,24 +40,34 @@ class ColorSwitchEnvironment():
             self.ball.move()
             for switch in self.switches:
                 switch.move()
+            for obstacle in self.obstacles:
+                obstacle.move()
             if self.fatal_collision_detected():
                 self.restart()
                 return
             self.check_for_switch_collision()
-            self.check_ticks()
-            self.decrement_ticks()
+            self.check_tick_trackers()
+            self.decrement_tick_trackers()
             self.cleanup_passed_items()
 
-    def get_random_number_of_ticks(self, min_ticks=20, max_ticks=200):
+    def get_random_number_of_ticks(self, min_ticks=50, max_ticks=250):
         return rand.randint(min_ticks, max_ticks)
 
-    def check_ticks(self):
+    def check_tick_trackers(self):
+        if self.ticks_til_next_obstacle == 0:
+            self.add_obstacle()
+            self.ticks_til_next_obstacle = self.get_random_number_of_ticks()
         if self.ticks_til_next_switch == 0:
             self.add_switch()
-            self.ticks_til_next_switch = self.get_random_number_of_ticks()
+            self.ticks_til_next_switch = self.ticks_til_next_obstacle + self.get_random_number_of_ticks()
 
-    def decrement_ticks(self):
+    def decrement_tick_trackers(self):
+        self.ticks_til_next_obstacle -= 1
         self.ticks_til_next_switch -= 1
+
+    def add_obstacle(self):
+        self.obstacles.append(Obstacle(self.palette, y=MotionDimension(pos=self.top_edge, vel=self.scroll_speed),
+            deg=MotionDimension(vel=-1)))
 
     def add_switch(self):
         self.switches.append(Switch(self.palette, y=MotionDimension(pos=self.top_edge, vel=self.scroll_speed)))
@@ -72,15 +82,17 @@ class ColorSwitchEnvironment():
 
     def check_for_switch_collision(self):
         for i, switch in enumerate(self.switches):
-            x_diff = abs(switch.x.pos - self.ball.x.pos)
-            y_diff = abs(switch.y.pos - self.ball.y.pos)
-            diff_threshold = max(switch.radius, self.ball.radius) / 2
-            if x_diff <= diff_threshold and y_diff <= diff_threshold:
+            if switch.has_collided_with(self.ball):
                 switch.apply_to(self.ball)
                 del self.switches[i]
 
     def fatal_collision_detected(self):
-        return self.is_off_screen(self.ball)
+        if self.is_off_screen(self.ball):
+            return True
+        for obstacle in self.obstacles:
+            if obstacle.has_collided_with(self.ball):
+                return True
+        return False
 
     def cleanup_passed_items(self):
         if len(self.switches) >= 1 and self.is_off_screen(self.switches[0]):

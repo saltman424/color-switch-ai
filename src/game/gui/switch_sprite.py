@@ -1,11 +1,11 @@
 import tkinter as tk
 from .sprite import Sprite
 
-class Switch(Sprite):
+class SwitchSprite(Sprite):
     def __init__(self, canvas, env, switch):
         super().__init__(canvas, env)
         self.switch = switch
-        self.tag = 'switch'
+        self.tag = 'switch' + str(switch.id)
         self.draw()
 
     def calculate_coords(self):

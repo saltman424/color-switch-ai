@@ -7,6 +7,12 @@ class Switch(BasicItem):
         self.palette = palette
         self.radius = radius
 
+    def has_collided_with(self, ball):
+        x_diff = abs(self.x.pos - ball.x.pos)
+        y_diff = abs(self.y.pos - ball.y.pos)
+        diff_threshold = max(self.radius, ball.radius) / 2
+        return x_diff <= diff_threshold and y_diff <= diff_threshold
+
     def apply_to(self, ball):
         new_color = self.palette.get_random_color(exclude=[ ball.color ])
         ball.color = new_color
