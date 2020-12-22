@@ -40,9 +40,10 @@ class ColorSwitchEnvironment():
             self.ball.move()
             for switch in self.switches:
                 switch.move()
-            if self.collision_detected():
+            if self.fatal_collision_detected():
                 self.restart()
                 return
+            self.check_for_switch_collision()
             self.check_ticks()
             self.decrement_ticks()
             self.cleanup_passed_items()
@@ -69,7 +70,16 @@ class ColorSwitchEnvironment():
             item.y.pos < self.bottom_edge
         )
 
-    def collision_detected(self):
+    def check_for_switch_collision(self):
+        for i, switch in enumerate(self.switches):
+            x_diff = abs(switch.x.pos - self.ball.x.pos)
+            y_diff = abs(switch.y.pos - self.ball.y.pos)
+            diff_threshold = max(switch.radius, self.ball.radius) / 2
+            if x_diff <= diff_threshold and y_diff <= diff_threshold:
+                switch.apply_to(self.ball)
+                del self.switches[i]
+
+    def fatal_collision_detected(self):
         return self.is_off_screen(self.ball)
 
     def cleanup_passed_items(self):
