@@ -3,7 +3,7 @@ from .items import *
 from .utils import *
 
 class ColorSwitchEnvironment():
-    def __init__(self, width=300, height=500, palette=Palette(), ball=Ball()):
+    def __init__(self, width=300, height=500, scroll_speed=-1.5, palette=Palette(), ball=Ball()):
         # Sizing
         self.width = width
         self.height = height
@@ -11,6 +11,7 @@ class ColorSwitchEnvironment():
         self.bottom_edge = self.top_edge - height
         self.right_edge = width // 2
         self.left_edge = self.right_edge - self.width
+        self.scroll_speed = scroll_speed
         # State
         self.paused = True
         # Items
@@ -58,14 +59,14 @@ class ColorSwitchEnvironment():
         self.ticks_til_next_switch -= 1
 
     def add_switch(self):
-        self.switches.append(Switch(self.palette, y=MotionDimension(pos=self.top_edge-1, vel=-1)))
+        self.switches.append(Switch(self.palette, y=MotionDimension(pos=self.top_edge, vel=self.scroll_speed)))
 
     def is_off_screen(self, item):
         return (
-            item.x.pos >= self.right_edge or
-            item.x.pos <= self.left_edge or
-            item.y.pos >= self.top_edge or
-            item.y.pos <= self.bottom_edge
+            item.x.pos > self.right_edge or
+            item.x.pos < self.left_edge or
+            item.y.pos > self.top_edge or
+            item.y.pos < self.bottom_edge
         )
 
     def collision_detected(self):
