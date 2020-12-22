@@ -2,7 +2,7 @@ from src.game.environment.utils import MotionDimension
 from .basic_item import BasicItem
 
 class Switch(BasicItem):
-    def __init__(self, palette, x=MotionDimension(), y=MotionDimension(vel=-1), radius=6):
+    def __init__(self, palette, x=None, y=None, radius=6):
         super().__init__(x, y)
         self.palette = palette
         self.radius = radius

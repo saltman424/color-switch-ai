@@ -1,22 +1,22 @@
 import tkinter as tk
 from .sprite import Sprite
 
-class Ball(Sprite):
-    def __init__(self, canvas, env):
+class Switch(Sprite):
+    def __init__(self, canvas, env, switch):
         super().__init__(canvas, env)
+        self.switch = switch
         self.tag = 'switch'
         self.draw()
 
     def calculate_coords(self):
-        ball = self.env.ball
-        self.x1 = self.translate_x(ball.x.pos - ball.radius)
-        self.y1 = self.translate_y(ball.y.pos + ball.radius)
-        self.x2 = self.translate_x(ball.x.pos + ball.radius)
-        self.y2 = self.translate_y(ball.y.pos - ball.radius)
+        self.x1 = self.translate_x(self.switch.x.pos - self.switch.radius)
+        self.y1 = self.translate_y(self.switch.y.pos + self.switch.radius)
+        self.x2 = self.translate_x(self.switch.x.pos + self.switch.radius)
+        self.y2 = self.translate_y(self.switch.y.pos - self.switch.radius)
 
     def draw(self):
         self.calculate_coords()
-        self.id = self.canvas.create_oval(self.x1, self.y1, self.x2, self.y2, fill=self.env.ball.color, tags=self.tag)
+        self.id = self.canvas.create_oval(self.x1, self.y1, self.x2, self.y2, fill='white', tags=self.tag)
 
     def erase(self):
         self.canvas.delete(self.id)

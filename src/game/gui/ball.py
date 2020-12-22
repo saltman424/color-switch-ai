@@ -3,21 +3,21 @@ import random as rand
 from .sprite import Sprite
 
 class Ball(Sprite):
-    def __init__(self, canvas, env):
+    def __init__(self, canvas, env, ball):
         super().__init__(canvas, env)
+        self.ball = ball
         self.tag = 'ball'
         self.draw()
 
     def calculate_coords(self):
-        ball = self.env.ball
-        self.x1 = self.translate_x(ball.x.pos - ball.radius)
-        self.y1 = self.translate_y(ball.y.pos + ball.radius)
-        self.x2 = self.translate_x(ball.x.pos + ball.radius)
-        self.y2 = self.translate_y(ball.y.pos - ball.radius)
+        self.x1 = self.translate_x(self.ball.x.pos - self.ball.radius)
+        self.y1 = self.translate_y(self.ball.y.pos + self.ball.radius)
+        self.x2 = self.translate_x(self.ball.x.pos + self.ball.radius)
+        self.y2 = self.translate_y(self.ball.y.pos - self.ball.radius)
 
     def draw(self):
         self.calculate_coords()
-        self.id = self.canvas.create_oval(self.x1, self.y1, self.x2, self.y2, fill=self.env.ball.color, tags=self.tag)
+        self.id = self.canvas.create_oval(self.x1, self.y1, self.x2, self.y2, fill=self.ball.color, tags=self.tag)
 
     def erase(self):
         self.canvas.delete(self.id)

@@ -28,6 +28,8 @@ class ColorSwitchEnvironment():
         self.ball.x.vel = 0
         self.ball.y.pos = 0
         self.ball.y.vel = 0
+        self.switches = []
+        self.ticks_til_next_switch = self.get_random_number_of_ticks()
 
     def restart(self):
         self.start()
@@ -56,8 +58,7 @@ class ColorSwitchEnvironment():
         self.ticks_til_next_switch -= 1
 
     def add_switch(self):
-        print('Adding switch...')
-        self.switches.append(Switch(self.palette))
+        self.switches.append(Switch(self.palette, y=MotionDimension(pos=self.top_edge-1, vel=-1)))
 
     def is_off_screen(self, item):
         return (
@@ -72,7 +73,6 @@ class ColorSwitchEnvironment():
 
     def cleanup_passed_items(self):
         if len(self.switches) >= 1 and self.is_off_screen(self.switches[0]):
-            print('Deleting switch...')
             del self.switches[0]
 
     def on_user_input(self):
